@@ -1,0 +1,18 @@
+[
+  {
+    "driver": "Charles Leclerc",
+    "team": "Ferrari",
+    "wins": 2,
+    "losses": 0,
+    "avg_margin": -46.19576920121699,
+    "best_margin": -46.912204909365755
+  },
+  {
+    "driver": "AI (rest of grid)",
+    "team": "Rest of grid",
+    "wins": 0,
+    "losses": 2,
+    "avg_margin": 46.19576920121699,
+    "best_margin": 46.912204909365755
+  }
+]
