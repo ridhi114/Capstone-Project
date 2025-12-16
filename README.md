@@ -1,427 +1,169 @@
-# 🏎️ F1 RaceBrain - AI-Powered Race Strategy Optimizer
+🏁 RaceBrain
 
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![F1](https://img.shields.io/badge/F1-2025-red.svg)](https://www.formula1.com/)
+An Interactive Formula 1 Strategy Simulator Using Reinforcement Learning
 
-> **Optimize Formula 1 pit stop strategies using Reinforcement Learning and real telemetry data from the FastF1 API**
+RaceBrain is an interactive web-based Formula 1 strategy simulator that allows users to race against an AI powered by reinforcement learning.
+The system is built using real Bahrain Grand Prix race data and integrates Reinforcement Learning, Monte Carlo simulation, and brute-force optimisation to study pit-stop decision-making under uncertainty.
 
-An intelligent race strategy system that learns optimal pit stop timing by training on real Bahrain GP 2025 telemetry. Compete against an AI opponent trained with Q-Learning to master F1 race strategy!
+🚀 Features
 
-![RaceBrain Screenshot](docs/screenshot.png)
+Interactive User vs AI racing dashboard
 
----
+Realistic race simulation using empirical tyre degradation models
 
-## 🎯 Features
+AI opponent powered by Q-learning
 
-✅ **Real F1 Data** - Uses actual 2025 Bahrain GP telemetry via FastF1 API  
-✅ **Q-Learning AI** - Trained on 30,000 episodes to learn optimal strategies  
-✅ **Interactive Racing** - Race against AI with different difficulty levels  
-✅ **Live Visualization** - Real-time charts showing lap times, positions, tyre age  
-✅ **Triple Validation** - RL, Brute-Force, and Monte Carlo methods all agree  
-✅ **6 Strategy Combinations** - All SOFT/MEDIUM/HARD compound pairings  
-✅ **Leaderboard System** - Track your best performances  
-✅ **Professional UI** - F1-themed web interface with Chart.js visualizations  
+Strategy validation using:
 
----
+Deterministic brute-force optimisation
 
-## 📊 Project Overview
+Monte Carlo expected-value optimisation
 
-### The Challenge
-Determine the optimal lap to pit in an F1 race while balancing:
-- 🏎️ Tyre degradation (performance decreases with age)
-- ⏱️ Pit stop time loss (~22.5 seconds)
-- 🔴🟡⚪ Compound characteristics (SOFT/MEDIUM/HARD)
+Dynamic lap-by-lap visualisations
 
-### The Solution
-A Q-Learning agent that learns optimal pit strategies by simulating thousands of races using real tyre performance data extracted from Bahrain GP 2025.
+Session leaderboard for repeatable experiments
 
-### Key Result
-**Optimal pit window: Laps 27-30** ✅ (Validated by 3 independent methods)
+🧠 Core Idea
 
----
+Pit-stop strategy in Formula 1 is a sequential decision problem under uncertainty.
+RaceBrain demonstrates how reinforcement learning learns robust strategies that may differ from deterministic optimal solutions when race dynamics are stochastic.
 
-## 🚀 Quick Start
+🛠️ Tech Stack
+Backend
 
-### Prerequisites
-```bash
-Python 3.11+
-pip (Python package manager)
-```
+Python
 
-### Installation
+NumPy, Pandas – data processing
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/f1-racebrain.git
-cd f1-racebrain
-```
+Custom Q-learning implementation
 
-2. **Install dependencies**
-```bash
+Monte Carlo simulation engine
+
+FastAPI – API server & orchestration
+
+Frontend
+
+HTML, CSS, JavaScript
+
+Chart.js – interactive charts
+
+REST-based communication with backend
+
+🧪 Methods Implemented
+1. Reinforcement Learning (Q-Learning)
+
+State: lap number, tyre compound, tyre age
+
+Action: pit or continue
+
+Reward: negative total race time (terminal reward)
+
+Trained under stochastic lap-time noise
+
+2. Brute-Force Optimisation
+
+Exhaustive search over all pit-stop laps
+
+Deterministic race dynamics
+
+Provides a theoretical lower bound
+
+3. Monte Carlo Simulation
+
+Expected-value optimisation under uncertainty
+
+Multiple rollouts per pit-lap candidate
+
+📊 Validation
+
+Strategies learned by RL are compared against brute-force and Monte Carlo solutions.
+Observed divergence between RL and brute-force solutions highlights risk-aware optimisation, not model error.
+
+🎮 Game Dashboard
+
+The RaceBrain dashboard allows users to:
+
+Select team and driver
+
+Choose tyre sequence and pit-stop strategy
+
+Configure race physics parameters
+
+Race against an AI using learned strategies
+
+Visualise lap times, gaps, and outcomes
+
+Track results using a session leaderboard
+
+▶️ Running the Project Locally
+1. Clone the Repository
+git clone https://github.com/your-username/racebrain.git
+cd racebrain
+
+2. Install Dependencies
 pip install -r requirements.txt
-```
 
-3. **Run the server**
-```bash
-python server.py
-```
+3. Start the Backend Server
+uvicorn server:app --reload
 
-4. **Open your browser**
-```
+4. Open in Browser
 http://127.0.0.1:8000
-```
 
----
-
-## 📦 Project Structure
-
-```
-f1-racebrain/
+📁 Project Structure
+racebrain/
 │
-├── server.py                          # FastAPI web server
-├── requirements.txt                   # Python dependencies
-├── README.md                          # This file
-│
+├── server.py                  # FastAPI backend & frontend routing
+├── train_bahrain_policy.py    # RL training script
 ├── data/
-│   ├── bahrain_2025_clean.parquet    # Cleaned telemetry data
-│   ├── bahrain_2025_decay.pkl        # Tyre degradation models
-│   └── q_tables/                      # Trained RL policies
-│       ├── SOFT_MEDIUM_policy.pkl
-│       ├── SOFT_HARD_policy.pkl
-│       └── ...
+│   ├── bahrain_2025_raw.parquet
+│   ├── bahrain_2025_clean.parquet
+│   └── bahrain_2025_decay.pkl
 │
+├── leaderboard.json           # Session leaderboard storage
 ├── notebooks/
-│   ├── F1_Strategy_RL_WORKING.ipynb  # Complete training pipeline
-│   └── Data_Extraction.ipynb         # FastF1 data processing
+│   └── Capstone_REAL_DATA_FINAL_FIX.ipynb
 │
-├── docs/
-│   ├── F1_Strategy_RL_Presentation.pptx  # Project presentation
-│   ├── F1_RaceBrain_Architecture.html    # System architecture
-│   └── screenshot.png
-│
-└── scripts/
-    ├── train_rl.py                    # Q-Learning training script
-    ├── validate.py                    # Brute-force validation
-    └── extract_data.py                # FastF1 data extraction
-```
-
----
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Python 3.11** - Core language
-- **FastAPI** - Modern web framework
-- **FastF1** - Official F1 telemetry API
-- **NumPy** - Numerical computing
-- **Pandas** - Data manipulation
-- **SciPy** - Linear regression for tyre models
-
-### Machine Learning
-- **Q-Learning** - Reinforcement learning algorithm
-- **Epsilon-Greedy** - Exploration strategy
-- **Custom Environment** - F1 race simulator
-
-### Frontend
-- **HTML5/CSS3** - Modern web interface
-- **JavaScript ES6+** - Interactive UI
-- **Chart.js** - Real-time visualizations
-- **Responsive Design** - Works on all devices
-
-### Deployment
-- **Uvicorn** - ASGI server
-- **Local Hosting** - Port 8000
-
----
-
-## 🎓 How It Works
-
-### 1. Data Collection
-```python
-# Load real F1 telemetry from FastF1 API
-session = fastf1.get_session(2025, 'Bahrain', 'R')
-session.load()
-laps = session.laps  # 1128 laps from 20 drivers
-```
-
-### 2. Tyre Model Extraction
-```python
-# Extract base pace and degradation for each compound
-lap_time(compound, age) = base_pace + degradation × age
-
-# Example:
-# SOFT:   92.3s + 0.12s/lap × age
-# MEDIUM: 93.2s + 0.085s/lap × age
-# HARD:   94.1s + 0.06s/lap × age
-```
-
-### 3. Q-Learning Training
-```python
-# Train agent over 30,000 episodes
-Q(s, a) ← Q(s, a) + α[r + γ·max Q(s', a') - Q(s, a)]
-
-# Hyperparameters:
-# α (learning rate): 0.15
-# γ (discount): 0.95
-# ε (exploration): 0.25 → 0.02 (decays over time)
-```
-
-### 4. Validation
-Three independent methods confirm optimal pit laps:
-- ✅ **Q-Learning**: Learned from exploration
-- ✅ **Brute-Force**: Exhaustive search (laps 6-51)
-- ✅ **Monte Carlo**: 300 stochastic simulations
-
----
-
-## 📈 Results
-
-### Optimal Pit Strategies
-
-| Starting Compound | Target Compound | RL Learned | Brute-Force | Validation |
-|-------------------|-----------------|------------|-------------|------------|
-| SOFT              | MEDIUM          | Lap 28     | Lap 28      | ✅ Match   |
-| SOFT              | HARD            | Lap 29     | Lap 29      | ✅ Match   |
-| MEDIUM            | SOFT            | Lap 28     | Lap 29      | ✅ Close   |
-| MEDIUM            | HARD            | Lap 30     | Lap 30      | ✅ Match   |
-| HARD              | SOFT            | Lap 27     | Lap 27      | ✅ Match   |
-| HARD              | MEDIUM          | Lap 28     | Lap 28      | ✅ Match   |
-
-### Key Findings
-- 🏆 **Optimal pit window: Laps 27-30**
-- 📊 All three validation methods converged
-- ⚡ Real-time decision making (<100ms)
-- 🎯 98.5% policy stability after training
-
----
-
-## 🎮 Usage Guide
+├── static/                    # Frontend assets
+└── README.md
 
-### Basic Race
+⚠️ Limitations
 
-1. **Select Your Team & Driver**
-   - Choose from all 10 F1 teams
-   - Pick your favorite driver
+Tabular Q-learning (no neural networks)
 
-2. **Configure Strategy**
-   - Set pit lap(s): e.g., `28` or `18,38` for 2-stop
-   - Choose tyre sequence: `SOFT → MEDIUM → HARD`
+Single-stop strategies only
 
-3. **Choose AI Difficulty**
-   - **Easy**: AI is ~1s/lap slower
-   - **Normal**: AI matches your pace
-   - **Hard**: AI is faster (uses RL policy!)
+No traffic, safety cars, or multi-agent interactions
 
-4. **Start Race**
-   - Watch live lap-by-lap progression
-   - View real-time charts
-   - See who wins!
+Sparse terminal reward structure
 
-### Advanced Features
+🔮 Future Work
 
-**Quick Presets:**
-- Classic 2-Stop
-- Hard Start
-- Sprint S→M
+Deep Reinforcement Learning (DQN / Actor-Critic)
 
-**Custom Physics:**
-- Adjust total laps
-- Modify pit loss time
-- Change lap time variance
+Multi-stop and adaptive strategies
 
-**Leaderboard:**
-- Track best lap times
-- Compare strategies
-- View race history
+Traffic and safety car modelling
 
----
+Multi-agent race simulations
 
-## 🐛 Troubleshooting
+Real-time strategy recommendation systems
 
-### Common Issues
+📚 References
 
-**Issue:** `ModuleNotFoundError: No module named 'fastf1'`  
-**Solution:** Install dependencies: `pip install -r requirements.txt`
+Stochastic Optimization & Robust Decision-Making
+s00521-020-04871-1
 
-**Issue:** Port 8000 already in use  
-**Solution:** Kill existing process or change port in `server.py`
+Reinforcement Learning for Sequential Decision Problems
+arXiv:2306.16088
 
-**Issue:** FastF1 cache errors  
-**Solution:** Clear cache: `rm -rf fastf1_cache/`
+Learning-Based Strategy Optimization under Uncertainty
+arXiv:2501.04068
 
-**Issue:** Q-tables not loading  
-**Solution:** Run training notebook first to generate policies
+👩‍💻 Authors
 
----
+Capstone Project — Bachelor of Data Science
+SP Jain School of Global Management
 
-## 📊 Training Your Own Model
+📜 License
 
-### Step 1: Extract Data
-```bash
-jupyter notebook notebooks/Data_Extraction.ipynb
-```
-- Loads Bahrain 2025 GP
-- Cleans telemetry data
-- Extracts tyre models
-
-### Step 2: Train Q-Learning Agent
-```bash
-jupyter notebook notebooks/F1_Strategy_RL_WORKING.ipynb
-```
-- Trains all 6 strategies
-- 5,000 episodes each
-- Validates with brute-force
-
-### Step 3: Export Policies
-Policies automatically saved to `data/q_tables/`
-
-### Step 4: Deploy
-```bash
-python server.py
-```
-
----
-
-## 🔬 Research & Validation
-
-### Methodology
-This project employs rigorous validation:
-
-1. **Q-Learning**: Learns through trial-and-error exploration
-2. **Brute-Force**: Tests every possible pit lap mathematically
-3. **Monte Carlo**: Simulates races with realistic lap time variance
-
-All three methods independently confirmed laps 27-30 as optimal.
-
-### Academic Context
-This project demonstrates:
-- ✅ RL viability for real-world motorsport strategy
-- ✅ Effective use of domain-specific data (FastF1)
-- ✅ Production-ready deployment architecture
-- ✅ Comprehensive validation methodology
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -m "Add feature"`
-4. Push to branch: `git push origin feature-name`
-5. Open a Pull Request
-
-### Development Setup
-```bash
-# Install dev dependencies
-pip install -r requirements-dev.txt
-
-# Run tests
-pytest tests/
-
-# Format code
-black .
-flake8 .
-```
-
----
-
-## 🚧 Roadmap
-
-### Version 2.0 (Planned)
-- [ ] 2-stop and 3-stop strategies
-- [ ] All 24 F1 circuits
-- [ ] Weather conditions (wet/dry)
-- [ ] Safety car event handling
-- [ ] Deep RL (neural networks)
-
-### Version 3.0 (Future)
-- [ ] Multi-agent racing (20 cars)
-- [ ] Real-time race adaptation
-- [ ] Driver-specific behavioral models
-- [ ] Mobile app (iOS/Android)
-- [ ] Cloud deployment (AWS/Azure)
-
----
-
-## 📝 Citation
-
-If you use this project in your research, please cite:
-
-```bibtex
-@software{f1_racebrain_2025,
-  author = {Your Name},
-  title = {F1 RaceBrain: AI-Powered Race Strategy Optimizer},
-  year = {2025},
-  url = {https://github.com/yourusername/f1-racebrain},
-  note = {Reinforcement Learning system for F1 pit stop optimization}
-}
-```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **FastF1** - For providing the incredible F1 telemetry API
-- **Formula 1** - For inspiring this project
-- **Anthropic Claude** - For development assistance
-- **Bahrain GP 2025** - For the real race data
-
----
-
-## 📧 Contact
-
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **Email**: your.email@example.com
-- **Project**: [https://github.com/yourusername/f1-racebrain](https://github.com/yourusername/f1-racebrain)
-
----
-
-## ⭐ Show Your Support
-
-If you found this project helpful:
-- ⭐ Star this repository
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 🔀 Fork and contribute
-
----
-
-<div align="center">
-
-### 🏎️ Built with passion for Formula 1 and Machine Learning 🏁
-
-**[View Demo](http://127.0.0.1:8000)** • **[Report Bug](https://github.com/yourusername/f1-racebrain/issues)** • **[Request Feature](https://github.com/yourusername/f1-racebrain/issues)**
-
-</div>
-
----
-
-## 📸 Screenshots
-
-### Race Configuration
-![Config](docs/screenshots/config.png)
-
-### Live Race View
-![Race](docs/screenshots/race.png)
-
-### Results & Charts
-![Results](docs/screenshots/results.png)
-
-### Leaderboard
-![Leaderboard](docs/screenshots/leaderboard.png)
-
----
-
-**Last Updated:** December 2025  
-**Version:** 1.0.0  
-**Status:** ✅ Production Ready
+This project is intended for academic and educational use
