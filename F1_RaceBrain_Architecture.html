@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 RaceBrain - System Architecture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 1400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #E10600;
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+        }
+        .layer {
+            fill: #f8f9fa;
+            stroke: #dee2e6;
+            stroke-width: 2;
+        }
+        .component {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .component:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+        .component-box {
+            stroke-width: 2;
+            rx: 8;
+        }
+        .data-layer .component-box { fill: #4A90E2; stroke: #2E5C8A; }
+        .ml-layer .component-box { fill: #E94B3C; stroke: #A83528; }
+        .backend-layer .component-box { fill: #50C878; stroke: #3A9B5C; }
+        .frontend-layer .component-box { fill: #F39C12; stroke: #C87F0A; }
+        
+        .component-text {
+            fill: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .component-subtext {
+            fill: rgba(255,255,255,0.9);
+            font-size: 11px;
+        }
+        .arrow {
+            stroke: #495057;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        .label {
+            font-size: 12px;
+            fill: #666;
+        }
+        .layer-title {
+            font-size: 18px;
+            font-weight: bold;
+            fill: #333;
+        }
+        .tech-badge {
+            font-size: 10px;
+            fill: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏎️ F1 RaceBrain - System Architecture</h1>
+        <div class="subtitle">Complete Technology Stack & Data Flow</div>
+        
+        <svg viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#495057" />
+                </marker>
+                
+                <!-- Gradient definitions -->
+                <linearGradient id="dataGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#5A9FE2;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#4A90E2;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="mlGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#F95B4C;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#E94B3C;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="backendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#60D888;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#50C878;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="frontendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FFAC22;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#F39C12;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Layer 1: Data Sources -->
+            <g class="data-layer">
+                <text x="600" y="30" class="layer-title" text-anchor="middle">📊 Data Layer</text>
+                
+                <!-- FastF1 API -->
+                <g class="component" transform="translate(50, 50)">
+                    <rect class="component-box" width="200" height="80" fill="url(#dataGrad)"/>
+                    <text x="100" y="35" class="component-text" text-anchor="middle">FastF1 API</text>
+                    <text x="100" y="52" class="component-subtext" text-anchor="middle">Official F1 Telemetry</text>
+                    <text x="100" y="68" class="tech-badge" text-anchor="middle">Python • Real-time Data</text>
+                </g>
+                
+                <!-- Bahrain 2025 Data -->
+                <g class="component" transform="translate(280, 50)">
+                    <rect class="component-box" width="200" height="80" fill="url(#dataGrad)"/>
+                    <text x="100" y="30" class="component-text" text-anchor="middle">Bahrain GP 2025</text>
+                    <text x="100" y="47" class="component-subtext" text-anchor="middle">1128 laps • 20 drivers</text>
+                    <text x="100" y="62" class="component-subtext" text-anchor="middle">Lap times • Compounds</text>
+                    <text x="100" y="75" class="tech-badge" text-anchor="middle">Parquet Format</text>
+                </g>
+                
+                <!-- Tyre Models -->
+                <g class="component" transform="translate(510, 50)">
+                    <rect class="component-box" width="200" height="80" fill="url(#dataGrad)"/>
+                    <text x="100" y="30" class="component-text" text-anchor="middle">Tyre Models</text>
+                    <text x="100" y="47" class="component-subtext" text-anchor="middle">Base Pace + Degradation</text>
+                    <text x="100" y="62" class="component-subtext" text-anchor="middle">SOFT • MEDIUM • HARD</text>
+                    <text x="100" y="75" class="tech-badge" text-anchor="middle">Linear Regression</text>
+                </g>
+                
+                <!-- User Inputs -->
+                <g class="component" transform="translate(740, 50)">
+                    <rect class="component-box" width="200" height="80" fill="url(#dataGrad)"/>
+                    <text x="100" y="35" class="component-text" text-anchor="middle">User Inputs</text>
+                    <text x="100" y="52" class="component-subtext" text-anchor="middle">Team • Driver • Strategy</text>
+                    <text x="100" y="68" class="tech-badge" text-anchor="middle">HTML Forms</text>
+                </g>
+            </g>
+            
+            <!-- Arrows from Data to ML -->
+            <path class="arrow" d="M 150 130 L 150 200"/>
+            <path class="arrow" d="M 380 130 L 380 200"/>
+            <path class="arrow" d="M 610 130 L 610 200"/>
+            
+            <!-- Layer 2: ML/RL Training -->
+            <g class="ml-layer">
+                <text x="600" y="220" class="layer-title" text-anchor="middle">🤖 Machine Learning Layer</text>
+                
+                <!-- Q-Learning Agent -->
+                <g class="component" transform="translate(50, 240)">
+                    <rect class="component-box" width="220" height="100" fill="url(#mlGrad)"/>
+                    <text x="110" y="30" class="component-text" text-anchor="middle">Q-Learning Agent</text>
+                    <text x="110" y="48" class="component-subtext" text-anchor="middle">State: (lap, age, compound)</text>
+                    <text x="110" y="63" class="component-subtext" text-anchor="middle">Actions: pit / no_pit</text>
+                    <text x="110" y="78" class="component-subtext" text-anchor="middle">30,000 episodes trained</text>
+                    <text x="110" y="92" class="tech-badge" text-anchor="middle">Python • NumPy</text>
+                </g>
+                
+                <!-- Training Environment -->
+                <g class="component" transform="translate(300, 240)">
+                    <rect class="component-box" width="220" height="100" fill="url(#mlGrad)"/>
+                    <text x="110" y="30" class="component-text" text-anchor="middle">F1 Environment</text>
+                    <text x="110" y="48" class="component-subtext" text-anchor="middle">Race Simulator</text>
+                    <text x="110" y="63" class="component-subtext" text-anchor="middle">57 laps • Pit loss: 22.5s</text>
+                    <text x="110" y="78" class="component-subtext" text-anchor="middle">Tyre degradation physics</text>
+                    <text x="110" y="92" class="tech-badge" text-anchor="middle">Custom Environment</text>
+                </g>
+                
+                <!-- Validation -->
+                <g class="component" transform="translate(550, 240)">
+                    <rect class="component-box" width="220" height="100" fill="url(#mlGrad)"/>
+                    <text x="110" y="25" class="component-text" text-anchor="middle">Validation</text>
+                    <text x="110" y="43" class="component-subtext" text-anchor="middle">• Brute-Force Search</text>
+                    <text x="110" y="58" class="component-subtext" text-anchor="middle">• Monte Carlo (300 sims)</text>
+                    <text x="110" y="73" class="component-subtext" text-anchor="middle">• Triple verification</text>
+                    <text x="110" y="88" class="component-subtext" text-anchor="middle">Optimal: Laps 27-30 ✓</text>
+                </g>
+                
+                <!-- Policy Export -->
+                <g class="component" transform="translate(800, 240)">
+                    <rect class="component-box" width="220" height="100" fill="url(#mlGrad)"/>
+                    <text x="110" y="35" class="component-text" text-anchor="middle">Trained Policy</text>
+                    <text x="110" y="53" class="component-subtext" text-anchor="middle">Q-Table Export</text>
+                    <text x="110" y="68" class="component-subtext" text-anchor="middle">6 strategies learned</text>
+                    <text x="110" y="83" class="tech-badge" text-anchor="middle">Pickle • 322 entries</text>
+                </g>
+            </g>
+            
+            <!-- Arrows from ML to Backend -->
+            <path class="arrow" d="M 150 340 L 150 420"/>
+            <path class="arrow" d="M 900 340 L 900 420"/>
+            
+            <!-- Layer 3: Backend -->
+            <g class="backend-layer">
+                <text x="600" y="440" class="layer-title" text-anchor="middle">⚙️ Backend Layer</text>
+                
+                <!-- FastAPI Server -->
+                <g class="component" transform="translate(50, 460)">
+                    <rect class="component-box" width="240" height="110" fill="url(#backendGrad)"/>
+                    <text x="120" y="30" class="component-text" text-anchor="middle">FastAPI Server</text>
+                    <text x="120" y="48" class="component-subtext" text-anchor="middle">RESTful API Endpoints</text>
+                    <text x="120" y="63" class="component-subtext" text-anchor="middle">• /race (POST)</text>
+                    <text x="120" y="78" class="component-subtext" text-anchor="middle">• /leaderboard (GET/POST)</text>
+                    <text x="120" y="93" class="component-subtext" text-anchor="middle">• /teams (GET)</text>
+                    <text x="120" y="105" class="tech-badge" text-anchor="middle">Python 3.11 • Uvicorn</text>
+                </g>
+                
+                <!-- Race Engine -->
+                <g class="component" transform="translate(320, 460)">
+                    <rect class="component-box" width="240" height="110" fill="url(#backendGrad)"/>
+                    <text x="120" y="30" class="component-text" text-anchor="middle">Race Simulator</text>
+                    <text x="120" y="48" class="component-subtext" text-anchor="middle">Physics Engine</text>
+                    <text x="120" y="63" class="component-subtext" text-anchor="middle">• Lap time calculation</text>
+                    <text x="120" y="78" class="component-subtext" text-anchor="middle">• Strategy execution</text>
+                    <text x="120" y="93" class="component-subtext" text-anchor="middle">• User vs AI racing</text>
+                    <text x="120" y="105" class="tech-badge" text-anchor="middle">NumPy • Pandas</text>
+                </g>
+                
+                <!-- AI Strategy Engine -->
+                <g class="component" transform="translate(590, 460)">
+                    <rect class="component-box" width="240" height="110" fill="url(#backendGrad)"/>
+                    <text x="120" y="30" class="component-text" text-anchor="middle">AI Strategy Engine</text>
+                    <text x="120" y="48" class="component-subtext" text-anchor="middle">RL Policy Execution</text>
+                    <text x="120" y="63" class="component-subtext" text-anchor="middle">• Load trained Q-table</text>
+                    <text x="120" y="78" class="component-subtext" text-anchor="middle">• State → Action mapping</text>
+                    <text x="120" y="93" class="component-subtext" text-anchor="middle">• Real-time decisions</text>
+                    <text x="120" y="105" class="tech-badge" text-anchor="middle">Pickle • DefaultDict</text>
+                </g>
+                
+                <!-- Data Storage -->
+                <g class="component" transform="translate(860, 460)">
+                    <rect class="component-box" width="240" height="110" fill="url(#backendGrad)"/>
+                    <text x="120" y="30" class="component-text" text-anchor="middle">Data Storage</text>
+                    <text x="120" y="48" class="component-subtext" text-anchor="middle">Leaderboard & Results</text>
+                    <text x="120" y="63" class="component-subtext" text-anchor="middle">• JSON storage</text>
+                    <text x="120" y="78" class="component-subtext" text-anchor="middle">• Race history</text>
+                    <text x="120" y="93" class="component-subtext" text-anchor="middle">• Performance tracking</text>
+                    <text x="120" y="105" class="tech-badge" text-anchor="middle">File System</text>
+                </g>
+            </g>
+            
+            <!-- Arrows from Backend to Frontend -->
+            <path class="arrow" d="M 170 570 L 170 650"/>
+            <path class="arrow" d="M 440 570 L 440 650"/>
+            <path class="arrow" d="M 710 570 L 710 650"/>
+            <path class="arrow" d="M 980 570 L 980 650"/>
+            
+            <!-- User input arrow -->
+            <path class="arrow" d="M 840 130 L 840 200 L 980 200 L 980 460"/>
+            
+            <!-- Layer 4: Frontend -->
+            <g class="frontend-layer">
+                <text x="600" y="670" class="layer-title" text-anchor="middle">🎨 Frontend Layer</text>
+                
+                <!-- Web Interface -->
+                <g class="component" transform="translate(50, 690)">
+                    <rect class="component-box" width="280" height="120" fill="url(#frontendGrad)"/>
+                    <text x="140" y="30" class="component-text" text-anchor="middle">Web Interface</text>
+                    <text x="140" y="48" class="component-subtext" text-anchor="middle">RaceBrain UI</text>
+                    <text x="140" y="63" class="component-subtext" text-anchor="middle">• Race configuration panel</text>
+                    <text x="140" y="78" class="component-subtext" text-anchor="middle">• Strategy selector</text>
+                    <text x="140" y="93" class="component-subtext" text-anchor="middle">• Team/driver chooser</text>
+                    <text x="140" y="108" class="component-subtext" text-anchor="middle">• Real-time race viewer</text>
+                </g>
+                
+                <!-- Visualization -->
+                <g class="component" transform="translate(360, 690)">
+                    <rect class="component-box" width="280" height="120" fill="url(#frontendGrad)"/>
+                    <text x="140" y="30" class="component-text" text-anchor="middle">Visualization</text>
+                    <text x="140" y="48" class="component-subtext" text-anchor="middle">Chart.js Charts</text>
+                    <text x="140" y="63" class="component-subtext" text-anchor="middle">• Lap time progression</text>
+                    <text x="140" y="78" class="component-subtext" text-anchor="middle">• Position tracker</text>
+                    <text x="140" y="93" class="component-subtext" text-anchor="middle">• Tyre age graph</text>
+                    <text x="140" y="108" class="component-subtext" text-anchor="middle">• Gap analysis</text>
+                </g>
+                
+                <!-- Results Display -->
+                <g class="component" transform="translate(670, 690)">
+                    <rect class="component-box" width="280" height="120" fill="url(#frontendGrad)"/>
+                    <text x="140" y="30" class="component-text" text-anchor="middle">Results & Analytics</text>
+                    <text x="140" y="48" class="component-subtext" text-anchor="middle">Race Summary</text>
+                    <text x="140" y="63" class="component-subtext" text-anchor="middle">• Winner announcement</text>
+                    <text x="140" y="78" class="component-subtext" text-anchor="middle">• Strategy comparison</text>
+                    <text x="140" y="93" class="component-subtext" text-anchor="middle">• Leaderboard</text>
+                    <text x="140" y="108" class="component-subtext" text-anchor="middle">• Performance metrics</text>
+                </g>
+            </g>
+            
+            <!-- Technology Stack Badge -->
+            <rect x="50" y="850" width="1100" height="120" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="8"/>
+            <text x="600" y="875" class="layer-title" text-anchor="middle">🛠️ Complete Technology Stack</text>
+            
+            <text x="80" y="905" style="font-size: 13px; font-weight: bold; fill: #E10600;">Languages:</text>
+            <text x="80" y="925" style="font-size: 12px; fill: #444;">Python 3.11 • JavaScript (ES6+) • HTML5 • CSS3</text>
+            
+            <text x="80" y="950" style="font-size: 13px; font-weight: bold; fill: #E10600;">Libraries & Frameworks:</text>
+            <text x="80" y="970" style="font-size: 12px; fill: #444;">FastAPI • FastF1 • NumPy • Pandas • SciPy • Chart.js • Uvicorn</text>
+            
+            <text x="600" y="905" style="font-size: 13px; font-weight: bold; fill: #E10600;">ML/RL:</text>
+            <text x="600" y="925" style="font-size: 12px; fill: #444;">Q-Learning • Custom Environment • Epsilon-Greedy</text>
+            
+            <text x="600" y="950" style="font-size: 13px; font-weight: bold; fill: #E10600;">Deployment:</text>
+            <text x="600" y="970" style="font-size: 12px; fill: #444;">Local Server (127.0.0.1:8000) • Port 8000</text>
+        </svg>
+    </div>
+</body>
+</html>
